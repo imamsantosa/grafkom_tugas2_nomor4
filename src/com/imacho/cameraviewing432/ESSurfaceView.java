@@ -1,6 +1,7 @@
 package com.imacho.cameraviewing432;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -18,12 +19,14 @@ import android.view.MotionEvent;
 public class ESSurfaceView extends GLSurfaceView {
 
 	private final ESRender esRender;
-
+	private boolean _dragging = false;
+	
 	public ESSurfaceView(Context context) {
 		super(context);
 
 		// Set the Renderer for drawing on the GLSurfaceView
-		esRender = new ESRender();
+		esRender = new ESRender(context);
+//		esRender = new ESRender();
 		setRenderer(esRender);
 
 		// To enable keypad
@@ -49,6 +52,7 @@ public class ESSurfaceView extends GLSurfaceView {
 
 		float x = v.getX();
 		float y = v.getY();
+		kontrol(v);
 
 		switch (v.getAction()) {
 
@@ -115,6 +119,67 @@ public class ESSurfaceView extends GLSurfaceView {
 		}
 
 		return true;
+	}
+	
+	public void kontrol(MotionEvent event){
+		Point _touchingPoint = new Point(1013, 500);
+		
+		if (event.getAction() == MotionEvent.ACTION_DOWN) {
+			_dragging = true;
+		} else if (event.getAction() == MotionEvent.ACTION_UP) {
+			_dragging = false;
+		}
+		
+		if(_dragging){
+			_touchingPoint.x = (int) event.getX();
+			_touchingPoint.y = esRender.myheight - (int) event.getY();
+			esRender.touching_x = _touchingPoint.x;
+			esRender.touching_y = _touchingPoint.y;
+			
+			if((_touchingPoint.x >= 614 && _touchingPoint.x <= 657) && (_touchingPoint.y >= 410 && _touchingPoint.y <= 450)){
+				esRender.text_naik();
+			}
+			
+			if((_touchingPoint.x >= 614 && _touchingPoint.x <= 657) && (_touchingPoint.y >= 367 && _touchingPoint.y <= 410)){
+				esRender.text_turun();
+			}
+			
+			//lingkaran
+			
+			if((_touchingPoint.x >= 90 && _touchingPoint.x <= 142) && (_touchingPoint.y >= 175 && _touchingPoint.y <= 229)){
+				esRender.rotasi_depan();
+			}
+			
+			if((_touchingPoint.x >= 90 && _touchingPoint.x <= 142) && (_touchingPoint.y >= 48 && _touchingPoint.y <= 101)){
+				esRender.rotasi_belakang();
+			}
+			
+			if((_touchingPoint.x >= 158 && _touchingPoint.x <= 208) && (_touchingPoint.y >= 111 && _touchingPoint.y <= 163)){
+				esRender.rotasi_kanan();
+			}
+			
+			if((_touchingPoint.x >= 21 && _touchingPoint.x <= 73) && (_touchingPoint.y >= 111 && _touchingPoint.y <= 163)){
+				esRender.rotasi_kiri();
+			}
+			
+			//panah
+			if((_touchingPoint.x >= 715 && _touchingPoint.x <= 766) && (_touchingPoint.y >= 184 && _touchingPoint.y <= 233)){
+				esRender.move_atas();
+			}
+			
+			if((_touchingPoint.x >= 715 && _touchingPoint.x <= 766) && (_touchingPoint.y >= 41 && _touchingPoint.y <= 89)){
+				esRender.move_bawah();
+			}
+			
+			if((_touchingPoint.x >= 793 && _touchingPoint.x <= 837) && (_touchingPoint.y >= 111 && _touchingPoint.y <= 163)){
+				esRender.move_kanan();
+			}
+			
+			if((_touchingPoint.x >= 639 && _touchingPoint.x <= 686) && (_touchingPoint.y >= 111 && _touchingPoint.y <= 163)){
+				esRender.move_kiri();
+			}
+			
+		} 
 	}
 
 	// Key-down event handler
